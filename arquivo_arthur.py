@@ -14,6 +14,15 @@ def menu():
 5 - Listar todos os funcionários
 6 - Sair do sistema
  =>""")
+    
+def limpa_tela():
+    os.system("cls || clear")
+
+def salvar_funcionario(nomes, idades, cpfs, setores, funcoes, salarios, telefones):
+    funcionario = Funcionario(nomes, idades, cpfs, setores, funcoes, salarios, telefones)
+    session.add(funcionario)
+    session.commit()
+
 
 #criando banco de dados
 MEU_BANCO = create_engine("sqlite:///meubanco.db")
@@ -26,7 +35,18 @@ session = Session()
 Base = declarative_base()
 
 class Funcionario(Base):
-    
+    __tablename__ = "funcionarios"
+
+    id = Column(Integer, primary_key = True, autoincrement= True )
+    nome = Column("nome", String)
+    idade = Column("idade", Integer)
+    cpf = Column("cpf", float)
+    setor = Column("setor", String)
+    funcao = Column("funcao", String)
+    salario = Column("salario", float)
+
+
+
     def __init__(self, nome:str, idade:int, cpf:float, setor:str, funcao:str, salario:float, telefone:float):
         self.nome = nome
         self.idade = idade
@@ -55,6 +75,7 @@ while True:
             funcao = str(input("Digite sua função: "))
             salario = float(input("Digite o valor do seu salário: "))
             telefone = float(input("Digite o seu telefone: "))
+            salvar_funcionario(nome, idade, cpf, setor, funcao, salario, telefone)
 
 
 
