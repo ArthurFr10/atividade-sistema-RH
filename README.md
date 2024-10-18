@@ -6,13 +6,9 @@ Exemplo:
 ```
 def salvar_funcionario(funcionario):
 
-
-
 def pesquisar_um_funcionario(funcionario):
 
-
 def atualizar_funcionario(funcionario):
-
 
 def excluir_funcionario(funcionario):
 
