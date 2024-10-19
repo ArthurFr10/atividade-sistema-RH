@@ -11,7 +11,7 @@ def menu():
 3 - Atualizar os dados de um funcionário
 4 - Excluir um funcionário
 5 - Listar todos os funcionários
-6 - Sair do sistema
+0 - Sair do sistema
 """)
 
 def limpa_tela():
@@ -27,7 +27,7 @@ def salvar_funcionario():
     funcao = str(input("Digite sua função: "))
     salario = float(input("Digite o valor do seu salário: "))
     telefone = str(input("Digite o seu telefone: "))
-    
+    print("Funcionário adicionado com sucesso")
     funcionario = Funcionario(nome = nome, idade = idade, cpf = cpf, setor = setor, funcao = funcao, salario = salario, telefone = telefone)
     session.add(funcionario)
     session.commit()
@@ -37,13 +37,13 @@ def pesquisar_um_funcionario():
     funcionario = session.query(Funcionario).filter_by(cpf = procurar_funcionario).first()
     lista_funcionarios_consulta = session.query(Funcionario).all()
     for funcionario in lista_funcionarios_consulta:
-        funcionario.nome
-        funcionario.idade
-        funcionario.cpf
-        funcionario.setor
-        funcionario.funcao
-        funcionario.salario
-        funcionario.telefone
+        print(f"Nome: {funcionario.nome}")
+        print(f"Idade{funcionario.idade}")
+        print(f"CPF: {funcionario.cpf}")
+        print(f"Setor: {funcionario.setor}")
+        print(f"Função: {funcionario.funcao}")
+        print(f"Salário: {funcionario.salario}")
+        print(f"Telefone: {funcionario.telefone}")
         
 
 def atualizar_funcionario():
@@ -58,6 +58,7 @@ def atualizar_funcionario():
         funcionario.salario = float(input("Digite seu salário: "))
         funcionario.telefone = input("Digite seu telefone(com DDD): ")
         session.commit()
+        print(f"{funcionario.nome} atualizado com sucesso")
     else:
         print("Erro ao atualizar. Tente Novamente")
 
@@ -91,10 +92,10 @@ Base = declarative_base()
 class Funcionario(Base):
     __tablename__ = "funcionarios"
 
-    id = Column(Integer)
+    id = Column(Integer, primary_key = True, autoincrement= True)
     nome = Column("nome", String)
     idade = Column("idade", Integer)
-    cpf = Column("cpf", String, primary_key = True, autoincrement= True)
+    cpf = Column("cpf", String,)
     setor = Column("setor", String)
     funcao = Column("funcao", String)
     salario = Column("salario", Integer)
@@ -113,18 +114,25 @@ class Funcionario(Base):
 #criando tabela no banco de dados
 Base.metadata.create_all(bind=MEU_BANCO)
 
+limpa_tela()
 while True:
     menu()
     opcao = int(input("Digite a opção que deseja selecionar: "))
     match opcao:
         case 1:
             salvar_funcionario()
+        case 2:
+            pesquisar_um_funcionario()
         case 3:
             atualizar_funcionario()
         case 4:
             excluir_funcionario()
         case 5:
             listar_todos_funcionarios()
+        case 0:
+            break
+        case _:
+            print("Opção inválida. Tente Novamente")
 
 
 
