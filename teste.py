@@ -17,84 +17,73 @@ def menu():
 def limpa_tela():
     os.system("cls || clear")
 
+limpa_tela()
 
 def salvar_funcionario():
     print("Solicitando dados para o usuário: ")
     nome = input("Digite seu nome: ")
     idade = int(input("Digite sua idade: "))
-    cpf = str(input("Digite seu CPF: "))
-    setor = str((input("Digite o seu setor: ")))
-    funcao = str(input("Digite sua função: "))
+    cpf = input("Digite seu CPF: ")
+    setor = input("Digite o seu setor: ")
+    funcao = input("Digite sua função: ")
     salario = float(input("Digite o valor do seu salário: "))
-    telefone = str(input("Digite o seu telefone: "))
+    telefone = input("Digite o seu telefone: ")
     
-    funcionario = Funcionario(nome = nome, idade = idade, cpf = cpf, setor = setor, funcao = funcao, salario = salario, telefone = telefone)
-    session.add(funcionario)
+    novo_funcionario = Funcionario(nome=nome, idade=idade, cpf=cpf, setor=setor, funcao=funcao, salario=salario, telefone=telefone)
+    session.add(novo_funcionario)
     session.commit()
 
-def pesquisar_um_funcionario():
-    procurar_funcionario = input("Digite o cpf do usuário para ser consultado: ")
-    funcionario = session.query(Funcionario).filter_by(cpf = procurar_funcionario).first()
-    lista_funcionarios_consulta = session.query(Funcionario).all()
-    for funcionario in lista_funcionarios_consulta:
-        funcionario.nome
-        funcionario.idade
-        funcionario.cpf
-        funcionario.setor
-        funcionario.funcao
-        funcionario.salario
-        funcionario.telefone
-        
-
 def atualizar_funcionario():
-    cpf_funcionario = input("Digite o cpf do usuário para ser atualizado: ")
-    funcionario = session.query(Funcionario).filter_by(cpf = cpf_funcionario).first()
+    cpf_funcionario = input("Informe o CPF do usuário para ele ser atualizado: ")
+    funcionario = session.query(Funcionario).filter_by(cpf=cpf_funcionario).first()
+    
     if funcionario:
         funcionario.nome = input("Digite seu nome: ")
         funcionario.idade = int(input("Digite sua idade: "))
-        funcionario.cpf = input("Digite seu cpf: ")
+        funcionario.cpf = input("Digite seu CPF: ")
         funcionario.setor = input("Digite seu setor: ")
         funcionario.funcao = input("Digite sua função: ")
         funcionario.salario = float(input("Digite seu salário: "))
-        funcionario.telefone = input("Digite seu telefone(com DDD): ")
+        funcionario.telefone = input("Digite seu telefone: ")
+        
         session.commit()
     else:
-        print("Erro ao atualizar. Tente Novamente")
+        print("Funcionário não encontrado.")
 
 def excluir_funcionario():
-    cpf_funcinario = input("Digite o cpf do usuário que será excluido: ")
-    funcionario = session.query(Funcionario).filter_by(cpf = cpf_funcinario).first()
+    cpf_funcionario = input("Digite o CPF do usuário que será excluído: ")
+    funcionario = session.query(Funcionario).filter_by(cpf=cpf_funcionario).first()
+    
     if funcionario:
         session.delete(funcionario)
         session.commit()
-        print(f"{funcionario.nome} excluído com sucesso")
+        print(f"{funcionario.nome} excluído com sucesso.")
     else:
-        print("Erro ao excluir")
-
+        print("Funcionário não encontrado.")
 
 def listar_todos_funcionarios():
-    lista_funcionarios_todos = session.query(Funcionario).all()
+    lista_funcionarios = session.query(Funcionario).all()
 
-    for funcionario in lista_funcionarios_todos:
-        print(f"Número: {funcionario.id} - Nome: {funcionario.nome} - Idade: {funcionario.idade} - CPF: {funcionario.cpf} - Setor: {funcionario.setor} - Função: {funcionario.funcao} - Salário{funcionario.salario} - Telefone(com DDD):{funcionario.telefone}")
+    for funcionario in lista_funcionarios:
+        print(f"{funcionario.id} - {funcionario.nome} - {funcionario.idade} - {funcionario.cpf} - {funcionario.setor} - {funcionario.funcao} - {funcionario.salario} - {funcionario.telefone}")
 
-#criando banco de dados
+# Criando banco de dados
 MEU_BANCO = create_engine("sqlite:///meubanco.db")
 
-#criando conexão com banco de dados
+# Criando conexão com banco de dados
 Session = sessionmaker(bind=MEU_BANCO)
 session = Session()
 
-#criando tabela
+# Criando tabela
 Base = declarative_base()
 
 class Funcionario(Base):
     __tablename__ = "funcionarios"
 
-    id = Column(Integer)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column("nome", String)
     idade = Column("idade", Integer)
-    cpf = Column("cpf", String, primary_key = True, autoincrement= True)
+    cpf = Column("cpf", String)
     setor = Column("setor", String)
     funcao = Column("funcao", String)
     salario = Column("salario", Integer)
@@ -108,9 +97,8 @@ class Funcionario(Base):
         self.funcao = funcao
         self.salario = salario
         self.telefone = telefone
-    
 
-#criando tabela no banco de dados
+# Criando tabela no banco de dados
 Base.metadata.create_all(bind=MEU_BANCO)
 
 while True:
@@ -125,12 +113,8 @@ while True:
             excluir_funcionario()
         case 5:
             listar_todos_funcionarios()
-
-
-
-
-
-
-
-
-            
+        case 6:
+            print("Saindo do sistema...")
+            break
+        case _:
+            print("Opção inválida. Tente novamente.")
